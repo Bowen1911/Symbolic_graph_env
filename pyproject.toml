@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "symplan"
+version = "1.2.0"
+description = "符号资源推理环境：问题生成、自动搜索轨迹、Qwen QA 导出与独立验证"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+tokenizer = ["transformers>=4.40"]
+dev = ["pytest>=7"]
+
+[project.scripts]
+symplan = "symplan.cli:main"
+
+[tool.setuptools]
+packages = ["symplan"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
