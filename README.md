@@ -2,7 +2,19 @@
 
 English | [简体中文](README_zh.md)
 
-A single problem can admit multiple valid reasoning paths. `symplan` provides controllable symbolic resource-planning tasks, four deterministic search teachers, and a rule-replay verifier to study how multiple reasoning modes affect learning efficiency under bounded model capacity, dataset scale, and training budget.
+## Background and Motivation
+
+Post-training of large language models commonly mixes reasoning trajectories collected from multiple teachers, prompting strategies, or search procedures. Because the same problem can be solved through structurally distinct reasoning paths—such as forward construction versus backward subgoal regression, or breadth-first exploration versus depth-first search—combining multiple reasoning modes under identical problem inputs introduces conditional multi-modality in the training target.
+
+Evaluating how such mode diversity interacts with model capacity, data scale, and training budget on natural-language benchmarks faces three obstacles:
+1. **Unobserved teacher modes**: The underlying search strategy of each trajectory is rarely labeled, and surface-level stylistic variation is entangled with structural search choices.
+2. **Coarse-grained verification**: Checking only the final answer cannot distinguish a coherent reasoning trace from a valid final answer preceded by an invalid search process (`hack`), nor can it pinpoint the exact step where two modes diverge or where an error renders the goal unreachable.
+3. **Uncontrolled problem distribution**: Pretraining contamination and uneven structural difficulty prevent clean isolation of capacity scaling, token exposure, and per-problem mode coverage.
+
+`symplan` is built to make these factors explicitly controllable and measurable. It pairs parameterized symbolic resource-planning tasks with four deterministic search teachers (`forward-bfs`, `forward-dfs`, `backward-bfs`, `backward-dfs`) and an independent rule-replay verifier, enabling controlled investigation of three core questions:
+1. **Capacity, data, and mode scaling**: Under bounded model parameters, unique problems, and token budgets, how does mixing multiple reasoning modes affect learning efficiency and per-problem multi-mode coverage compared to single-mode training?
+2. **Divergence and step criticality**: Where do different search modes diverge along a trajectory, and how do errors at critical steps (which irreversibly consume required resources) versus non-critical steps determine task success?
+3. **Process-level failure diagnosis**: How do local search-graph construction errors (e.g., `NEW`/`DUP` state tracking or frontier scheduling violations) propagate to final plan executability, and how can targeted interventions or post-goal path verification (`RECHECK`) repair them?
 
 ## Why Symbolic Resource Planning?
 
